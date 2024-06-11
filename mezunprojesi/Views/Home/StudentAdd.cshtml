@@ -1,0 +1,228 @@
+﻿
+@using mezunprojesi.Controllers
+@model mezunprojesi.Controllers.Studentclass
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Student Add";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>StudentAdd</title>
+    <style>
+        body {
+            background-color: rgba(234, 222, 246, 0.668); /* Bebe mavisi */
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr; /* Tek sütunlu grid */
+            grid-gap: 20px; /* Elemanlar arasındaki boşluk */
+            place-items: center; /* Elemanları merkeze yerleştir */
+            height: 800px;
+        }
+
+
+        form-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+            width: 300px; /* Form elemanlarının genişliği */
+        }
+
+        label {
+            display: block;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            margin-bottom: 5px;
+        }
+
+        button {
+            width: 145px;
+            height: 40px;
+            background: rgba(15, 7, 23, 0.668);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border-radius: 45px;
+            cursor: pointer;
+            gap: 15px;
+            border: none;
+            outline: none;
+            position: relative;
+            transition-duration: 1.4s;
+            border: 2px solid #fff; /* Green */
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 45px;
+            height: 50%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 20px; /* Textboxlar arasındaki boşluğu 20 piksel olarak ayarlar */
+            width: 300px; /* Form elemanlarının genişliği */
+            border: 2px solid rgb(30, 76, 99);
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.982); /* Gölge ekler */
+        }
+
+        button:hover {
+            background-color: white;
+            color: rgba(15, 7, 23, 0.668);
+            border: 2px solid rgba(15, 7, 23, 0.668);
+        }
+
+        .text-danger {
+            color: darkblue /* Kırmızı */
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            position: relative; /* Dökümanın içinde pozisyonlandır */
+            top: 20px; /* Butonun üzerine 20 piksel yukarıda */
+            z-index: 9999;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            position: relative; /* Dökümanın içinde pozisyonlandır */
+            top: 20px; /* Butonun üzerine 20 piksel yukarıda */
+            z-index: 9999;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .navbar {
+            background-color: rgba(15, 7, 23, 0.668); /* Beyaz */
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Logo ve yazı arasında boşluk bırakmak için */
+            border-bottom: 1px solid #ccc;
+            flex-wrap: wrap;
+            top: 0px; /* Ekranın üstünde yer alacak */
+            left: 0px; /* Ekranın solunda yer alacak */
+            right: 0px;
+            z-index: 1000;
+            height: 50px;
+            width: 100%;
+            position: fixed; /* fixlemek için */
+        }
+
+        .title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold; /* Yazıyı kalınlaştır */
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-align: center; /* Yazıyı ortala */
+            flex-grow: 1; /* Yer kaplamak için */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Butonları aralarında boşluk bırakarak sağa ve sola yaslar */
+            width: 300px; /* İstenilen genişlik */
+        }
+
+        .back {
+            display: flex;
+            justify-content: center;
+            top: -143px;
+            right: -77px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="title">Student Information</div>
+    </div>
+
+    <div class="container">
+
+        <form method="post" action="~/Home/StudentAdd">
+            <div class="form-group">
+                <label for="StudentNumber">Student Number</label>
+                <input name="StudentNumber" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.StudentNumber, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="StudentName">Student Username</label>
+                <input name="StudentName" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="StudentSurname">Student Name and Surname</label>
+                <input name="StudentSurname" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.StudentSurname, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input name="Password" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label for="AccessLevel">Access Level</label>
+                <input name="AccessLevel" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.AccessLevel, "", new { @class = "text-danger" })
+            </div>
+
+          
+            <div class="form-group">
+                <label for="Department">Department ID</label>
+                <input name="Department" class="form-control" required />
+                @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+
+        </form>
+
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+
+    </div>
+
+    <div class="back">
+        <form method="get" action="~/Home/Admin">
+            <button type="submit" class="back">Back</button>
+        </form>
+    </div>
+
+
+
+
+</body>
+</html>

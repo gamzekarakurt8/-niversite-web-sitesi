@@ -1,0 +1,169 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel= "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <title>Giris</title>
+    <style>
+
+        i{
+            font-size: 50px;
+            color: azure;
+            padding: 10px;
+            width: 50px;
+        }
+        
+        /* Navbar stilleri */
+        .navbar {
+            background-color: rgba(15, 7, 23, 0.668); /* Beyaz arka plan */
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Logo ve yazı arasında boşluk bırakmak için */
+            border-bottom: 1px solid #ccc;
+            flex-wrap: wrap;
+            top: 0px; /* Ekranın üstünde yer alacak */
+            left: 0px; /* Ekranın solunda yer alacak */
+            right: 0px;
+            z-index: 1000;
+            height: 70px;
+            width: 100%;
+            position: fixed; /* fixlemek için */
+        }
+
+            .navbar img {
+                width: 50px;
+                margin-right: 10px;
+            }
+
+        .university-title {
+            font-size: 20px;
+            font-weight: bold; /* Yazıyı kalınlaştır */
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color: azure;
+            text-align: center; /* Yazıyı ortala */
+            flex-grow: 1; /* Yer kaplamak için */
+        }
+
+        /* Diğer stiller */
+        .login-container {
+            background-color: rgba(15, 7, 23, 0.668);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px rgba(248, 248, 248, 0.982);
+            width: 300px;
+            margin: auto; /* Yatay ortala */
+            position: absolute; /* Mutlak konumlandırma */
+            top: 50%; /* Üst kenarı ekranın yarısına gelir */
+            left: 50%; /* Sol kenarı ekranın yarısına gelir */
+            transform: translate(-50%, -50%); /* Dikey ve yatay olarak tam ortala */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #f8f7f7;
+            font-size: 24px;
+            text-align: center; /* Başlığı ortala */
+            font-weight: bold;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+            .input-group label {
+                display: block;
+                margin-bottom: 5px;
+                color: #f9faf8;
+                font-weight: bold;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+            }
+
+            .input-group input {
+                width: calc(100% - 22px);
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 35px;
+                border: 2px solid rgb(30, 76, 99);
+               
+            }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: rgba(234, 222, 246, 0.668);
+            border: 2px solid #fff;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 35px;
+            cursor: pointer;
+            gap: 20px;
+            border: none;
+            outline: none;
+            position: relative;
+        }
+
+            button:hover {
+                background-color: white;
+                color: rgb(30, 76, 99);
+                border: 2px solid rgb(30, 76, 99);
+            }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Ek olarak, sayfa arka planını güzelleştirelim */
+        body {
+            background-color: rgba(234, 222, 246, 0.668); /* Bebe mavisi */
+            margin: 0; /* Sayfa kenar boşluğunu kaldır */
+            font-family: Arial, sans-serif; /* Genel yazı tipi */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <i class="fa-solid fa-school-flag"></i>
+        <div class="university-title">Şener Üniversitesi Giriş Ekranı</div>
+    </div>
+
+    <div class="login-container">
+        <h2>Kullanıcı Girişi</h2>
+        <!-- Hata mesajı gösterme -->
+        @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+        {
+            <div class="error-message">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <!-- Kullanıcı giriş formu -->
+        <form id="login-form" method="post">
+            <div class="input-group">
+                <label for="username">Kullanıcı adınız</label>
+                <input type="text" placeholder="Username" id="username" name="userName" required>
+                <!-- nameyi userNameye eşitliyoruz çünkü homecontrollerde öyle tanımladık oradaki işlemler için gerekli oluyor aynı windowsformdaki isimler gibi düşünün -->
+            </div>
+            <div class="input-group">
+                <label for="password">Şifreniz</label>
+                <input type="password" placeholder="Password" id="password" name="password" required>
+                <!-- aynı şekilde burda nameyi passworda tanımlıyoruz -->
+            </div>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <!-- Kullanıcı girişi formu bitişi -->
+    </div>
+</body>
+</html>

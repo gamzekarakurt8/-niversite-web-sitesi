@@ -1,0 +1,115 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Admin</title>
+    <style>
+        body {
+            background-color: rgba(234, 222, 246, 0.668); /* Bebe mavisi */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(15, 7, 23, 0.668);
+            border-radius: 8px;
+            padding: 50px;
+            box-shadow: 0px 0px 10px 0px rgba(248, 248, 248, 0.982);
+            width: 300px;
+            height: 127px;
+            margin: auto; /* Yatay ortala */
+            position: absolute; /* Mutlak konumlandırma */
+            top: 50%; /* Üst kenarı ekranın yarısına gelir */
+            left: 50%; /* Sol kenarı ekranın yarısına gelir */
+            transform: translate(-50%, -50%); /* Dikey ve yatay olarak tam ortala */
+            justify-content: center;
+        }
+
+        button-container {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .navbar {
+            background-color: rgba(15, 7, 23, 0.668); /* Beyaz */
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Logo ve yazı arasında boşluk bırakmak için */
+            border-bottom: 1px solid #ccc;
+            flex-wrap: wrap;
+            top: 0px; /* Ekranın üstünde yer alacak */
+            left: 0px; /* Ekranın solunda yer alacak */
+            right: 0px;
+            z-index: 1000;
+            height: 50px;
+            width: 100%;
+            position: fixed; /* fixlemek için */
+        }
+
+        .title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold; /* Yazıyı kalınlaştır */
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-align: center; /* Yazıyı ortala */
+            flex-grow: 1; /* Yer kaplamak için */
+        }
+
+        button {
+            width: 300px;
+            height: 55px;
+            background: rgba(186, 174, 199, 0.668);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border-radius: 45px;
+            cursor: pointer;
+            gap: 15px;
+            border: none;
+            outline: none;
+            position: relative;
+            transition-duration: 1.4s;
+            border: 2px solid #fff; /* Green */
+            margin-bottom: 20px;
+        }
+
+
+            button:hover {
+                background-color: white;
+                color: rgba(15, 7, 23, 0.668);
+                border: 2px solid rgba(15, 7, 23, 0.668);
+            }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="title">Şener University</div>
+    </div>
+    <div class="container">
+        <div class="button-container">
+            <form method="get" action="/Home/StudentAdd">
+                <button type="submit">Add Students</button>
+            </form>
+            <form method="get" action="~/Home/TeacherAdd">
+                <button>Add Teacher</button>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>
