@@ -1,5 +1,4 @@
 ﻿@model List<mezunprojesi.Controllers.ExamSchedule>
-
 @{
     Layout = null;
 }
@@ -9,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>TeacherExamSchedule</title>
+    <title>StudentExamSchedule</title>
     <style>
         :root {
             --main-color: #8e44ad;
@@ -241,6 +240,7 @@
                 font-size: 1.6rem;
             }
 
+
         .side-bar {
             position: fixed;
             top: 0;
@@ -354,23 +354,30 @@
 
         main.table {
             background-color: #fff;
-            width: 1200px;
-            height: 80px;
+            width: 100%; /* Genişliği yüzde olarak ayarlandı */
             border-style: groove;
+            border-collapse: collapse; /* Tablonun kenarlarını birleştirir */
         }
 
         thead th {
             position: relative;
-            width: 1200px;
             background-color: #d5d1defe;
+            text-align: center; /* Hücre içeriğini sola hizalar */
+            font-size: small; /* Yazı boyutunu küçük yapar */
+            padding: 8px; /* Hücreler arasında boşluk ekler */
         }
 
+        table {
+            width: 100%; /* Tablonun genişliğini kapsayıcı elemana göre ayarlar */
+            table-layout: auto; /* Hücrelerin genişliğini içeriğe göre ayarlar */
+            border-collapse: collapse; /* Tablonun kenarlarını birleştirir */
+        }
 
-
-
-
-
-
+        td, th {
+            border: 1px solid #ddd; /* Hücre kenarlarına çizgi ekler */
+            padding: 8px; /* Hücreler arasında boşluk ekler */
+            word-wrap: break-word; /* Uzun kelimelerin taşmasını önler */
+        }
 
         media (max-width:1200px) {
             body
@@ -443,7 +450,7 @@
 <body>
     <header class="header">
         <section class="flex">
-            <a href="home.html" class="logo">Stumes</a>
+            <a href="~/Home/Teacher" class="logo">Stumes</a>
             <form action="" method="post" class="search-form">
                 <input type="text" name="search_box" placeholder="search courses..."
                        required maxlength="100">
@@ -459,11 +466,11 @@
             </div>
             <div class="profile">
                 <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-                <h3>Teacher Name</h3>
-                <span>E-mail</span>
-                <a href="profile.html" class="btn">view profile</a>
+                <h1>Welcome, @ViewBag.UserName!</h1>
+                <label>User ID: @ViewBag.UserID</label>
+                <a href="~/Home/Teacher" class="btn">view profile</a>
                 <div class="flex-btn">
-                    <a href="login.html" class="option-btn">logout</a>
+                    <a href="~/Home/Giris" class="option-btn">logout</a>
                 </div>
             </div>
         </section>
@@ -477,195 +484,94 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Course Id</th>
                         <th>Course Name</th>
                         <th>Date</th>
+                        <th>Class</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var schedule in Model)
                     {
                         <tr>
+                            <td>@schedule.dersid</td>
                             <td>@schedule.lessonname</td>
                             <td>@schedule.date</td>
                             <td>@schedule.classs</td>
-                            <td>@schedule.dersid</td>
+
                         </tr>
                     }
                 </tbody>
             </table>
         </section>
     </main>
-    <main class="table">
-        <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model)
-                    {
-                <tr>
-                    <td style="text-align: center;">@schedule.lessonname</td>
-                    <td style="text-align: center;">@schedule.date<br>@schedule.date<br>@schedule.classs</td>
-                </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <main class="table">
-        <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model)
-                    {
-                <tr>
-                    <td style="text-align: center;">@schedule.lessonname</td>
-                    <td style="text-align: center;">@schedule.date<br>@schedule.date<br>@schedule.classs</td>
-                </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <main class="table">
-        <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model)
-                    {
-                <tr>
-                    <td style="text-align: center;">@schedule.lessonname</td>
-                    <td style="text-align: center;">@schedule.date<br>@schedule.date<br>@schedule.classs</td>
-                </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <main class="table">
-        <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model)
-                    {
-                <tr>
-                    <td style="text-align: center;">@schedule.lessonname</td>
-                    <td style="text-align: center;">@schedule.date<br>@schedule.date<br>@schedule.classs</td>
-                </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <main class="table">
-        <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model)
-                    {
-                <tr>
-                    <td style="text-align: center;">@schedule.lessonname</td>
-                    <td style="text-align: center;">@schedule.date<br>@schedule.date<br>@schedule.classs</td>
-                </tr>
-                    }
-                </tbody>
-            </table>
-        </section>
-    </main>
 
 
-    <div class="side-bar">
 
-        <div class="close-side-bar">
-            <i class="fa-solid fa-square-xmark"></i>
-        </div>
-        <div class="profile">
-            <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-            <h3>Teacher Name</h3>
-            <span>E-mail</span>
-            <a href="profile.html" class="btn">view profile</a>
+        <div class="side-bar">
+
+            <div class="close-side-bar">
+                <i class="fa-solid fa-square-xmark"></i>
+            </div>
+            <div class="profile">
+                <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png" alt="">
+                <h1>Welcome, @ViewBag.UserName!</h1>
+                <label>User ID: @ViewBag.UserID</label>
+                <a href="~/Home/Teacher" class="btn">view profile</a>
+            </div>
+
+            <nav class="navbar">
+                <a href="~/Home/Teacher"><i class="fa-duotone fa-circle"></i><span>Home</span></a>
+                <a href="~/Home/CreateAnnouncement"><i class="fa-duotone fa-circle"></i><span>Create Announcement</span></a>
+                <a href="~/Home/TeacherSyllabus"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
+                <a href="~/Home/TeacherExamSchedule"><i class="fa-duotone fa-circle"></i><span>Exam Schedule</span></a>
+                <a href="~/Home/TeacherExamGrade"><i class="fa-duotone fa-circle"></i><span>Exam Grade Entry</span></a>
+                <a href="~/Home/TeacherAssignment"><i class="fa-duotone fa-circle"></i><span>Create Assignment</span></a>
+            </nav>
         </div>
 
-        <nav class="navbar">
-            <a href="~/Home/Teacher"><i class="fa-duotone fa-circle"></i><span>Home</span></a>
-            <a href="~/Home/CreateAnnouncement"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
-            <a href="~/Home/TeacherSyllabus"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
-            <a href="~/Home/TeacherExamSchedule"><i class="fa-duotone fa-circle"></i><span>Exam Schedule</span></a>
-            <a href="~/Home/TeacherExamGrade"><i class="fa-duotone fa-circle"></i><span>Exam Grade Entry</span></a>
-            <a href="~/Home/TeacherAssignment"><i class="fa-duotone fa-circle"></i><span>Create Assignment</span></a>
-        </nav>
-    </div>
+        <footer class="footer">
+            &copy; copyright 2024 | all rights reserved!
+        </footer>
 
-    <footer class="footer">
-        &copy; copyright 2024 | all rights reserved!
-    </footer>
+        <script>
+            let body = document.body;
 
-    <script>
-        let body = document.body;
+            let profile = document.querySelector('.header .flex .profile');
 
-        let profile = document.querySelector('.header .flex .profile');
+            document.querySelector('#user-btn').onclick = () => {
+                profile.classList.toggle('active');
+                searchForm.classList.remove('active');
+            }
 
-        document.querySelector('#user-btn').onclick = () => {
-            profile.classList.toggle('active');
-            searchForm.classList.remove('active');
-        }
+            let searchForm = document.querySelector('.header .flex .search-form');
 
-        let searchForm = document.querySelector('.header .flex .search-form');
+            document.querySelector('#search-btn').onclick = () => {
+                searchForm.classList.toggle('active');
+                profile.classList.remove('active');
+            }
 
-        document.querySelector('#search-btn').onclick = () => {
-            searchForm.classList.toggle('active');
-            profile.classList.remove('active');
-        }
+            let sideBar = document.querySelector('.side-bar');
 
-        let sideBar = document.querySelector('.side-bar');
+            document.querySelector('#menu-btn').onclick = () => {
+                sideBar.classList.toggle('active');
+                body.classList.toggle('active');
+            }
 
-        document.querySelector('#menu-btn').onclick = () => {
-            sideBar.classList.toggle('active');
-            body.classList.toggle('active');
-        }
-
-        document.querySelector('.side-bar .close-side-bar').onclick = () => {
-            sideBar.classList.remove('active');
-            body.classList.remove('active');
-        }
-
-        window.onscroll = () => {
-            profile.classList.remove('active');
-            searchForm.classList.remove('active');
-
-            if (window.innerWidth < 1200) {
+            document.querySelector('.side-bar .close-side-bar').onclick = () => {
                 sideBar.classList.remove('active');
                 body.classList.remove('active');
             }
-        }
-    </script>
+
+            window.onscroll = () => {
+                profile.classList.remove('active');
+                searchForm.classList.remove('active');
+
+                if (window.innerWidth < 1200) {
+                    sideBar.classList.remove('active');
+                    body.classList.remove('active');
+                }
+            }
+        </script>
 </body>
 </html>

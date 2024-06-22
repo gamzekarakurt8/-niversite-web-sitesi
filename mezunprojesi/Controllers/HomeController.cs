@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MySql.Data.MySqlClient;
 using System.Configuration;
-using System.IO;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Web.Mvc;
 
 
 namespace mezunprojesi.Controllers
@@ -38,15 +37,10 @@ namespace mezunprojesi.Controllers
 
         }
 
-        public ActionResult TeacherAssignment()
-        {
-            return View();
-        }
-
-       
-    
         public ActionResult Teacher()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
             return View();
         }
 
@@ -124,10 +118,62 @@ namespace mezunprojesi.Controllers
             return View();
         }
 
+        public ActionResult StudentHomework()
+        {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
+            int deptID = Convert.ToInt32(Session[SessionDeptIDKey]);
+            List<Assignment> assignment = GetAssignments(deptID);
+            return View(assignment);
+        }
+
+        public List<Assignment> GetAssignments(int deptID)
+        {
+            List<Assignment> assignmentList = new List<Assignment>();
+
+            using(MySqlConnection connection = new MySqlConnection(connectionString))
+            //MySqlConnection connection = new MySqlConnection(connectionString);
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "Select * from studenthomework where deptid = @deptid";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@deptid", deptID);
+
+                    using(MySqlDataReader reader = command.ExecuteReader())
+                    //MySqlDataReader reader = command.ExecuteReader();
+                    {
+                        while(reader.Read())
+                        {
+                            Assignment asg = new Assignment
+                            {
+                                dersid = Convert.ToInt32(reader["dersid"]),
+                                lessonname = reader["lessonname"].ToString(),
+                                explanation = reader["explanation"].ToString(),
+                                startanddate = (DateTime) reader["startanddate"]
+                            };
+
+                            assignmentList.Add(asg);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Hata: " + ex.Message);
+                    TempData["ErrorMessage"] = "Ders programı alınırken bir hata oluştu: " + ex.Message;
+                }
+
+                return assignmentList;
+            }
+        }
 
         public ActionResult StudentSyllabus()
         {
-           
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             int deptID = Convert.ToInt32(Session[SessionDeptIDKey]);
             List<Syllabus> syllabus = GetSyllabus(deptID);
             return View(syllabus);
@@ -175,13 +221,18 @@ namespace mezunprojesi.Controllers
 
         public ActionResult StudentAbsence()
         {
-            List<StudentAbsenceView> absence = GetAbsence();
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
+            int userID = (int)Session[SessionUserIDKey];
+            List<StudentAbsenceView> absence = GetAbsence(userID);
             return View(absence);
+
         }
 
 
 
-        private List<StudentAbsenceView> GetAbsence()
+        private List<StudentAbsenceView> GetAbsence(int userid)
         {
             List<StudentAbsenceView> absences = new List<StudentAbsenceView>();
 
@@ -191,8 +242,10 @@ namespace mezunprojesi.Controllers
                 try
                 {
                     connection.Open();
-                    string query = "SELECT sa.*, l.lessonname FROM studentabsence sa JOIN lesson l ON sa.dersid = l.lessonid";
+                    string query = "SELECT sa.*, l.lessonname FROM studentabsence sa JOIN lesson l ON sa.dersid = l.lessonid WHERE sa.userid = @userid";
                     MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@userid", userid);
+
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -201,7 +254,7 @@ namespace mezunprojesi.Controllers
                             {
                                 dersadi = reader["lessonname"].ToString(),
                                 dersid = Convert.ToInt32(reader["dersid"]),
-                                userid = Convert.ToInt32(reader["userid"]),
+
 
                                 week1 = Convert.ToInt32(reader["week1"] == DBNull.Value ? 0 : reader["week1"]),
                                 week2 = Convert.ToInt32(reader["week2"] == DBNull.Value ? 0 : reader["week2"]),
@@ -225,11 +278,12 @@ namespace mezunprojesi.Controllers
                 catch (Exception ex)
                 {
                     // Handle exceptions
-                    TempData["ErrorMessage"] = "Devamsızlık sonuçlarını gösterirken bir hata meydana geldi.....: " + ex.Message;
+                    TempData["ErrorMessage"] = "Devams zl k sonu lar n  g sterirken bir hata meydana geldi.....: " + ex.Message;
                 }
             }
 
             return absences;
+
         }
 
 
@@ -310,7 +364,7 @@ namespace mezunprojesi.Controllers
             }
         }
 
-        private List<AnnouncmentView> GetAnnouncements()
+        private List<AnnouncmentView> GetAnnouncements(int deptid)
         {
             List<AnnouncmentView> announcements = new List<AnnouncmentView>();
 
@@ -320,8 +374,9 @@ namespace mezunprojesi.Controllers
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM announcements";
+                    string query = "SELECT * FROM announcements WHERE deptid = @deptid";
                     MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@deptid", deptid);
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -330,7 +385,8 @@ namespace mezunprojesi.Controllers
                             {
                                 // Assuming your Announcement class has properties like lessonname, announce, and tarih
                                 lessonname = reader["lessonname"].ToString(),
-                                announce = reader["announce"].ToString()
+                                announce = reader["announce"].ToString(),
+                                teachername = reader["teachername"].ToString()
                             };
                             announcements.Add(announcement);
                         }
@@ -345,6 +401,62 @@ namespace mezunprojesi.Controllers
 
             return announcements;
         }
+
+        public void CreateAssignment(Assignment assignment)
+        {
+            int deptid = (int)Session[SessionDeptIDKey];
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "Insert into studenthomework (dersid, lessonname, explanation, startanddate, deptid) Values (@dersid, @lessonname, @explanation, @startanddate, @deptid)";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@dersid", assignment.dersid);
+                    command.Parameters.AddWithValue("@lessonname", assignment.lessonname);
+                    command.Parameters.AddWithValue("@explanation", assignment.explanation);
+                    command.Parameters.AddWithValue("@startanddate", assignment.startanddate);
+                    command.Parameters.AddWithValue("@deptid", deptid);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        TempData["SuccessMessage"] = "Ödev girildi!";
+
+                    }
+                    else
+                    {
+                        TempData["SuccessMessage"] = "İşlem sırasında bir hata oluştu";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Hata durumunda işlemler
+                    TempData["ErrorMessage"] = "İşlem sırasında bir hata oluştu: " + ex.Message;
+                    TempData["ErrorMessageDetail"] = ex.ToString(); // Daha detaylı hata bilgisi için
+                }
+            }
+
+
+        }
+
+        public ActionResult TeacherAssignment()
+        {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult TeacherAssignment(Assignment assignment)
+        {
+            CreateAssignment(assignment);
+            return View(assignment);
+        }
+
 
         public void CreateExamResult(TeacherExam teacher)
         {
@@ -393,7 +505,9 @@ namespace mezunprojesi.Controllers
 
         public ActionResult TeacherExamGrade()
         {
-            
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             return View();
         }
 
@@ -404,86 +518,17 @@ namespace mezunprojesi.Controllers
             return View(teacher);
         }
 
-        [HttpPost]
-        public ActionResult StudentHomework(HttpPostedFileBase file)
-        {
-            if (file != null && file.ContentLength > 0)
-            {
-                try
-                {
-                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                    string uploadFolderPath = Path.Combine(desktopPath, "C:\\Users\\gmzek\\OneDrive\\Masaüstü\\uploadedfiles");
-                    string fileName = Path.GetFileName(file.FileName);
-                    string filePath = Path.Combine(uploadFolderPath, fileName);
-
-                    // Dosyayı masaüstündeki klasöre kaydet
-                    if (!Directory.Exists(uploadFolderPath))
-                    {
-                        Directory.CreateDirectory(uploadFolderPath); // Klasör yoksa oluştur
-                    }
-
-                    file.SaveAs(filePath); // Dosyayı kaydet
-
-                    // Dosya bilgilerini veritabanına kaydet
-                    SaveFileInfoToDatabase(fileName, filePath);
-
-                    TempData["SuccessMessage"] = "Dosya başarıyla yüklendi.";
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = "Dosya yüklenirken bir hata oluştu: " + ex.Message;
-                }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Dosya seçilmedi veya dosya boş.";
-            }
-
-            return RedirectToAction("StudentHomework");
-        }
-
-        private void SaveFileInfoToDatabase(string fileName, string filePath)
-        {
-            string connectionString = "Server=localhost;Database=university;Uid=root;Pwd=1234;";
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-                    string query = "INSERT INTO file (filename, filepath) VALUES (@FileName, @FilePath)";
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@FileName", fileName);
-                    command.Parameters.AddWithValue("@FilePath", filePath);
-                    command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    // Veritabanına kaydetme sırasında hata oluşursa logla veya uygun bir şekilde işle
-                    Console.WriteLine("Veritabanına kaydetme sırasında hata oluştu: " + ex.Message);
-                }
-            }
-        }
-
-        public ActionResult StudentHomework()
-        {
-            List<string> fileNames = new List<string>();
-            string folderPath = @"C:\Users\gmzek\OneDrive\Masaüstü\uploadedfiles";
-            if (Directory.Exists(folderPath))
-            {
-                string[] files = Directory.GetFiles(folderPath);
-                foreach (string file in files)
-                {
-                    fileNames.Add(Path.GetFileName(file));
-                }
-            }
-            return View(fileNames);
-        }
-
-
-
         public void CreateNewAnnouncement(Announcement announce)
         {
+            // Ensure the session variables are set before accessing them
+            if (Session[SessionUserIDKey] == null || Session[SessionUserNameKey] == null)
+            {
+                TempData["ErrorMessage"] = "Oturum bilgileri eksik. Lütfen tekrar giriş yapın.";
+                return;
+            }
+
             int userID = (int)Session[SessionUserIDKey];
+            int deptID = (int)Session[SessionDeptIDKey];
             string sistemeGiren = (string)Session[SessionUserNameKey];
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -492,13 +537,14 @@ namespace mezunprojesi.Controllers
                 {
                     connection.Open();
 
-                    string query = "Insert into announcements (lessonname, teachername, announce, userid) Values (@lessonname, @teachername, @announce, @userid)";
+                    string query = "Insert into announcements (lessonname, teachername, announce, userid, deptid) Values (@lessonname, @teachername, @announce, @userid, @deptID)";
                     MySqlCommand command = new MySqlCommand(query, connection);
 
                     command.Parameters.AddWithValue("@lessonname", announce.lessonname);
                     command.Parameters.AddWithValue("@announce", announce.announce);
                     command.Parameters.AddWithValue("@teachername", sistemeGiren);
                     command.Parameters.AddWithValue("@userid", userID);
+                    command.Parameters.AddWithValue("@deptid", deptID);
 
 
                     int rowsAffected = command.ExecuteNonQuery();
@@ -524,6 +570,9 @@ namespace mezunprojesi.Controllers
 
         public ActionResult CreateAnnouncement()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             return View();
         }
 
@@ -578,12 +627,21 @@ namespace mezunprojesi.Controllers
 
         public ActionResult Student()
         {
-            List<AnnouncmentView> announcements = GetAnnouncements(); // Call a method to retrieve announcements from the database
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
+            int deptid = (int)Session[SessionDeptIDKey]; // bunu ekledik
+            List<AnnouncmentView> announcements = GetAnnouncements(deptid); // buradan fonksiyona verdik
             return View(announcements);
+
         }
 
         public ActionResult StudentAverage()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
+
             int deptid = (int)Session[SessionDeptIDKey];
             int userid = (Session[SessionUserIDKey] != null) ? (int)Session[SessionUserIDKey] : 0;
             List<TeacherExam> examResults = GetStudentAverages(userid, deptid);
@@ -646,6 +704,9 @@ namespace mezunprojesi.Controllers
 
         public ActionResult StudentExam()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             int deptid = (int)Session[SessionDeptIDKey];
             int userid = (Session[SessionUserIDKey] != null) ? (int)Session[SessionUserIDKey] : 0;
             List<TeacherExam> examResults = GetStudentExams(userid, deptid);
@@ -722,7 +783,7 @@ namespace mezunprojesi.Controllers
                     string query = @"SELECT 
                                 e.dersid,
                                 e.date,
-                                e.classs,
+                                e.class,
                                 e.deptid,
                                 l.lessonname
                             FROM 
@@ -743,7 +804,7 @@ namespace mezunprojesi.Controllers
                             {
                                 dersid = Convert.ToInt32(reader["dersid"]),
                                 date = DateTime.Parse(reader["date"].ToString()),
-                                classs = reader["midtermresult"].ToString(),
+                                classs = reader["class"].ToString(),
                                 lessonname = reader["lessonname"].ToString(),
 
 
@@ -763,6 +824,9 @@ namespace mezunprojesi.Controllers
 
         public ActionResult StudentExamSchedule()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             int deptid = (int)Session[SessionDeptIDKey];
             List<StudentExamSchedule> stschedule = GetStudentExamSchedules(deptid);
             return View(stschedule);
@@ -803,7 +867,7 @@ namespace mezunprojesi.Controllers
                                 date = DateTime.Parse(reader["date"].ToString()),
                                 classs = reader["class"].ToString(),
                                 lessonname = reader["lessonname"].ToString(),
-                                
+
 
                             };
                             examsch.Add(schedule);
@@ -821,6 +885,9 @@ namespace mezunprojesi.Controllers
 
         public ActionResult TeacherExamSchedule()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             //int deptid = (int)Session[SessionDeptIDKey];
             List<ExamSchedule> schedule = GetSchedule(2);
             return View(schedule);
@@ -854,6 +921,9 @@ namespace mezunprojesi.Controllers
        
         public ActionResult TeacherSyllabus()
         {
+            ViewBag.UserName = Session[SessionUserNameKey];
+            ViewBag.UserID = Session[SessionUserIDKey];
+
             int deptID = (int)Session[SessionDeptIDKey];
             int userID = (int)Session[SessionUserIDKey];
             List<TeacherSyllabus> syllabus = GetTeacherSyllabus(deptID, userID);

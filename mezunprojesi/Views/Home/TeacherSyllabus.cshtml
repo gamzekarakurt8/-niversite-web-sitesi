@@ -360,22 +360,20 @@
             width: 100%;
             border-style: groove;
             padding: 15px;
-            overflow: auto;
-            margin: auto;
+            overflow-x: auto; /* Yatay taşma durumunda kaydırma çubuğu ekler */
             border-radius: 10px;
             margin-top: 50px;
+            text-align: center;
         }
 
         thead th {
-            position: relative;
-            width: 100%;
             background-color: #d5d1defe;
             padding: 20px;
-            top: 1rem;
+            text-align: center; /* Başlıkları ortala */
         }
 
         tbody td {
-            padding: 40px;
+            padding: 20px;
             border: 1px solid #00000017;
             text-align: center;
         }
@@ -460,7 +458,7 @@
 <body>
     <header class="header">
         <section class="flex">
-            <a href="home.html" class="logo">Stumes</a>
+            <a href="~/Home/Teacher" class="logo">Stumes</a>
             <form action="" method="post" class="search-form">
                 <input type="text" name="search_box" placeholder="search courses..."
                        required maxlength="100">
@@ -476,11 +474,11 @@
             </div>
             <div class="profile">
                 <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-                <h3>Teacher Name</h3>
-                <span>E-mail</span>
-                <a href="profile.html" class="btn">view profile</a>
+                <h1>Welcome, @ViewBag.UserName!</h1>
+                <label>User ID: @ViewBag.UserID</label>
+                <a href="~/Home/Teacher" class="btn">view profile</a>
                 <div class="flex-btn">
-                    <a href="login.html" class="option-btn">logout</a>
+                    <a href="~/Home/Giris" class="option-btn">logout</a>
                 </div>
             </div>
         </section>
@@ -506,19 +504,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Count > 0)
+                    @{
+
+                        var sortedModel = Model.OrderBy(c => c.time).ThenBy(c => c.day).ToList();
+                    }
+
+                    @if (sortedModel.Count > 0)
                     {
-                        foreach (var course in Model)
+
+                        foreach (var timeGroup in sortedModel.GroupBy(c => c.time))
                         {
                             <tr>
-                                <td>@course.coursename</td>
-                                <td>@(course.day == "monday" ? course.time : "")</td>
-                                <td>@(course.day == "tuesday" ? course.time : "")</td>
-                                <td>@(course.day == "wednesday" ? course.time : "")</td>
-                                <td>@(course.day == "thursday" ? course.time : "")</td>
-                                <td>@(course.day == "friday" ? course.time : "")</td>
-                                <td>@(course.day == "saturday" ? course.time : "")</td>
-                                <td>@(course.day == "sunday" ? course.time : "")</td>
+                                <td>@timeGroup.Key</td>
+                                @foreach (var day in new List<string> { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" })
+                                {
+                                    <td>
+                                        @{
+                                            var coursesForDay = timeGroup.Where(c => c.day.ToLower() == day).ToList();
+                                            if (coursesForDay.Any())
+                                            {
+                                                
+                                                <ul>
+                                                    @foreach (var course in coursesForDay)
+                                                    {
+                                                        <li>@course.coursename</li>
+                                                    }
+                                                </ul>
+                                            }
+                                            else
+                                            {
+                                                
+                                                @:&nbsp;
+                                            }
+                                        }
+                                    </td>
+                                }
                             </tr>
                         }
                     }
@@ -540,17 +560,18 @@
         </div>
         <div class="profile">
             <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-            <h3>Teacher Name</h3>
-            <span>E-mail</span>
-            <a href="profile.html" class="btn">view profile</a>
+            <h1>Welcome, @ViewBag.UserName!</h1>
+            <label>User ID: @ViewBag.UserID</label>
+            <a href="~/Home/Teacher" class="btn">view profile</a>
         </div>
 
         <nav class="navbar">
-            <a href="final_project.html"><i class="fa-duotone fa-circle"></i><span>Home</span></a>
-            <a href="t_syllabus.html"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
-            <a href="t_schedule.html"><i class="fa-duotone fa-circle"></i><span>Exam Schedule</span></a>
-            <a href="t_exam.html"><i class="fa-duotone fa-circle"></i><span>Exam Grade Entry</span></a>
-            <a href="t_assignment.html"><i class="fa-duotone fa-circle"></i><span>Create Assignment</span></a>
+            <a href="~/Home/Teacher"><i class="fa-duotone fa-circle"></i><span>Home</span></a>
+            <a href="~/Home/CreateAnnouncement"><i class="fa-duotone fa-circle"></i><span>Create Announcement</span></a>
+            <a href="~/Home/TeacherSyllabus"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
+            <a href="~/Home/TeacherExamSchedule"><i class="fa-duotone fa-circle"></i><span>Exam Schedule</span></a>
+            <a href="~/Home/TeacherExamGrade"><i class="fa-duotone fa-circle"></i><span>Exam Grade Entry</span></a>
+            <a href="~/Home/TeacherAssignment"><i class="fa-duotone fa-circle"></i><span>Create Assignment</span></a>
         </nav>
     </div>
 

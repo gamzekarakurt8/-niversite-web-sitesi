@@ -448,7 +448,7 @@ media (max-width: 450px) {
 <body>
     <header class="header">
         <section class="flex">
-            <a href="home.html" class="logo">Stumes</a>
+            <a href="~/Home/Teacher" class="logo">Stumes</a>
             <form action="" method="post" class="search-form">
                 <input type="text" name="search_box" placeholder="search courses..."
                        required maxlength="100">
@@ -464,11 +464,11 @@ media (max-width: 450px) {
             </div>
             <div class="profile">
                 <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-                <h3>Teacher Name</h3>
-                <span>E-mail</span>
-                <a href="profile.html" class="btn">view profile</a>
+                <h1>Welcome, @ViewBag.UserName!</h1>
+                <label>User ID: @ViewBag.UserID</label>
+                <a href="~/Home/Teacher" class="btn">view profile</a>
                 <div class="flex-btn">
-                    <a href="login.html" class="option-btn">logout</a>
+                    <a href="~/Home/Giris" class="option-btn">logout</a>
                 </div>
             </div>
         </section>
@@ -518,9 +518,9 @@ media (max-width: 450px) {
         </div>
         <div class="profile">
             <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-            <h3>Teacher Name</h3>
-            <span>E-mail</span>
-            <a href="profile.html" class="btn">view profile</a>
+            <h1>Welcome, @ViewBag.UserName!</h1>
+            <label>User ID: @ViewBag.UserID</label>
+            <a href="~/Home/Teacher" class="btn">view profile</a>
         </div>
 
         <nav class="navbar">

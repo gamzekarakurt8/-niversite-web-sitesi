@@ -1,4 +1,5 @@
-﻿@model List<mezunprojesi.Controllers.TeacherExam>
+﻿@using mezunprojesi.Controllers
+@model mezunprojesi.Controllers.Assignment
 @{
     Layout = null;
 }
@@ -354,7 +355,7 @@
         main.table {
             background-color: #fff;
             width: 100%;
-            height: 60px;
+            height: 98px;
             border-style: groove;
             table-layout: auto; /* Esnek sütun genişlikleri için */
             border-collapse: collapse; /* Kenarların birleşmesi için */
@@ -484,7 +485,7 @@
 <body>
     <header class="header">
         <section class="flex">
-            <a href="home.html" class="logo">Stumes</a>
+            <a href="~/Home/Teacher" class="logo">Stumes</a>
             <form action="" method="post" class="search-form">
                 <input type="text" name="search_box" placeholder="search courses..."
                        required maxlength="100">
@@ -500,11 +501,11 @@
             </div>
             <div class="profile">
                 <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-                <h3>Teacher Name</h3>
-                <span>E-mail</span>
-                <a href="profile.html" class="btn">view profile</a>
+                <h1>Welcome, @ViewBag.UserName!</h1>
+                <label>User ID: @ViewBag.UserID</label>
+                <a href="~/Home/Teacher" class="btn">view profile</a>
                 <div class="flex-btn">
-                    <a href="login.html" class="option-btn">logout</a>
+                    <a href="~/Home/Giris" class="option-btn">logout</a>
                 </div>
             </div>
         </section>
@@ -515,28 +516,61 @@
     </div>
     <main class="table">
         <section class="table_body">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Subject</th>
-                        <th>Explanation</th>
-                        <th>Start and end date</th>
-                        <th>Situation</th>
-                    </tr>
-                </thead>
-                <tbody>
-        <tr>
-            <td style="text-align: center;"><input type="text" placeholder="Subject"></td>
-            <td style="text-align: center;"><input type="text" placeholder="Explanation"></td>
-            <td style="text-align: center;"><input type="text" placeholder="Start and end date"></td>
-            <td style="text-align: center;">did not deliver</td>
-        </tr>
-                </tbody>
-            </table>
+            <form method="post" action="/Home/TeacherAssignment">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ders id</th>
+                                <th>Lesson Name</th>
+                                <th>Explanation</th>
+                                <th>Finish Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <input type="text" name="dersid" placeholder="Ders id" required>
+                                    @Html.ValidationMessageFor(model => model.dersid, "", new { @class = "text-danger" })
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <input type="text" name="lessonname" placeholder="Lesson name" required>
+                                    @Html.ValidationMessageFor(model => model.lessonname, "", new { @class = "text-danger" })
+                                </td>
+
+                                <td style="text-align: center">
+                                    <input type="text" name="explanation" placeholder="Explantion" required>
+                                    @Html.ValidationMessageFor(model => model.explanation, "", new { @class = "text-danger" })
+                                </td>
+
+                                <td style="text-align: center">
+                                    <input type="text" name="startandend" placeholder="Start and End" required type="date">
+                                    @Html.ValidationMessageFor(model => model.startanddate, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="button3">Save</button>
+            </form>
+
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
         </section>
     </main>
 
-    <button class="button3">Save</button>
+
 
     <div class="side-bar">
 
@@ -545,14 +579,14 @@
         </div>
         <div class="profile">
             <img src="https://cdn-icons-png.flaticon.com/512/194/194936.png">
-            <h3>Teacher Name</h3>
-            <span>E-mail</span>
-            <a href="profile.html" class="btn">view profile</a>
+            <h1>Welcome, @ViewBag.UserName!</h1>
+            <label>User ID: @ViewBag.UserID</label>
+            <a href="~/Home/Teacher" class="btn">view profile</a>
         </div>
 
         <nav class="navbar">
             <a href="/Home/Teacher"><i class="fa-duotone fa-circle"></i><span>Home</span></a>
-            <a href="/Home/CreateAnnouncement"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
+            <a href="/Home/CreateAnnouncement"><i class="fa-duotone fa-circle"></i><span>Create Announcement</span></a>
             <a href="/Home/TeacherSyllabus"><i class="fa-duotone fa-circle"></i><span>Syllabus</span></a>
             <a href="/Home/TeacherExamSchedule"><i class="fa-duotone fa-circle"></i><span>Exam Schedule</span></a>
             <a href="/Home/TeacherExamGrade"><i class="fa-duotone fa-circle"></i><span>Exam Grade Entry</span></a>

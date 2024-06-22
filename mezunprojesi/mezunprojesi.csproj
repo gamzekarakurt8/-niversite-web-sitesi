@@ -179,6 +179,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\Announcement.cs" />
     <Compile Include="Controllers\AnnouncmentView.cs" />
+    <Compile Include="Controllers\Assignment.cs" />
     <Compile Include="Controllers\ExamGrade.cs" />
     <Compile Include="Controllers\ExamSchedule.cs" />
     <Compile Include="Controllers\HomeController.cs" />
